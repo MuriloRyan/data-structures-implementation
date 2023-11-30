@@ -1,3 +1,5 @@
-#Wellcome!
+# Wellcome! to my repository
 
-hello, this repository is my practical implementation of data structures
+Hello, this repository is my practical implementation of data structures 
+
+_Important: I haven't finished the implementations!_
