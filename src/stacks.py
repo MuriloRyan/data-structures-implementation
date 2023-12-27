@@ -26,42 +26,37 @@ class Stack:
     
     def _validate_node(self, object_var: Any):
         try:
-            object_var._validate_node
-            return True
+            if object_var._validate_node():
+                return True
+            else:
+                return None
         except:
             return None
 
-    def push(self,value: Any) -> str:
+    def push(self, value: Any) -> str:
+        #if the first node is empty
+        if self._first_node.value is None:
+            self._first_node.value = value
+            self._state = "__not_empty__"
+            return value
 
-        # if the first node has not an next value...
-        if not self._first_node.next:
-            #they receive an next value.
-            self._first_node.next = self.Node_Class(value=value)
-            self._last_node = self._first_node.next
+        #else, we create the next node
+        new_node = self.Node_Class(value=value)
+
+        #and we push it in the next of the first node (if is empty)
+        if self._first_node.next is None:
+            self._first_node.next = new_node
         
-        #if the first node is None, or if his value is equal None
-        elif not self._first_node or self._first_node.value == None:
-
-            self._first_node = self.Node_Class(value=value)
-            self._last_node = self._first_node
-
-        #else
+        #else, we run thought all nodes and push it in the last one
         else:
+            current_node = self._first_node.next
 
-            #we start to count using the next of the first (second)
-            next_node = self._first_node.next
-            
-            #and while the next_node have an next
-            while next_node.next:
-                #we go to the next node
-                next_node = next_node.next
-            
-            #when a node has not with an next node... the loop ends
-            #that means this is the last node, so, we give him a last node
-            next_node.next = self.Node_Class(value=value)
-            self._last_node = next_node.next
+            while current_node.next is not None:
+                current_node = current_node.next
+            current_node.next = new_node
 
-        self._state == "__not_empty__"
+        self._last_node = new_node
+        self._state = "__not_empty__"
         return value
 
     def pop(self) -> str:
@@ -69,80 +64,65 @@ class Stack:
         if self._first_node is None:
             self._state = "__empty__"
             return None
-        
-        #if the second node is empty
-        elif not self._first_node.next:
-            #we clear the last node
-            excluded_value = self._first_node.value
-            self._first_node = Node_Class()
+
+        #if the second is empty
+        if self._first_node.next is None:
+            value = self._first_node.value
+            self._first_node = self.Node_Class()
             self._last_node = None
             self._state = "__empty__"
+            return value
 
-        #we start with the first node
-        next_node = self._first_node
-        #it represent the node that come before the last one
+        #else, we start to count from the first node
+        current_node = self._first_node
         prev_node = None
 
-        #and while the next_node have an next...
-        try:
-            while next_node.next:
+        #while the node has a next
+        while current_node.next:
+            prev_node = current_node
+            current_node = current_node.next
 
-                #this is the current node
-                prev_node = next_node
-                #this is the next one
-                next_node = next_node.next
+        value = current_node.value
+        prev_node.next = None
+        self._last_node = prev_node
+        self._state = "__not_empty__"
+        return value
 
-            #if prev_node exists, we remove his next value (the last one)
-            if prev_node:
-                prev_node.next = None
-                self._last_node = prev_node  # we update the last node
-
-            #else, that means we have only the first and the second node existing 
-            else:
-                self._first_node.next = None
-                self._last_node = self._first_node
-
-            #we return the next value of the prev_node (so, the last of the stack)
-            return next_node.value
-        
-        except:
-            return excluded_value
-    
     def __len__(self):
         first_is_valid = self._validate_node(self._first_node)
 
-        i = 1 if first_is_valid else 0
+        i = 1 if first_is_valid and self._state == "__not_empty__" else 0
 
-        next_node = self._first_node.next if first_is_valid else None
+        current_node = self._first_node.next if first_is_valid else None
 
         #while the next value is not None, we add "," and the value of the Node
-        while next_node:
+        while current_node:
             i+=1
 
             #the next node is the next node of the last one
-            next_node = next_node.next
+            current_node = current_node.next
         
-        #finish the str of the stack
+        #return the length 
         return i
 
     def __repr__(self):
-        final_list, i = 'Stack(',0
+        final_list = 'Stack('
 
         #if the stack is not null
         final_list += str(self._first_node.value) if self._state == "__not_empty__" else ''
 
-        next_node = self._first_node.next if self._validate_node(self._first_node) else None
+        current_node = self._first_node.next if self._validate_node(self._first_node) else None
 
         try:
             #while the next value is not None, we add "," and the value of the Node
-            while next_node:
-                final_list += ',' + str(next_node)
-                i+=1
+            while current_node:
+                final_list += ''.join(f',{str(current_node)}')
 
                 #the next node is the next node of the last one
-                next_node = next_node.next
+                current_node = current_node.next
         except:
             pass
 
         #finish the str of the stack
         return str(final_list) + ")"
+
