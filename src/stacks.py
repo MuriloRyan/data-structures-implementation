@@ -19,8 +19,8 @@ class Stack:
         self.Node_Class = Node_Class
 
         #the first of all nodes
-        self._first_node = self.Node_Class(first_value)
-        self._last_node = None 
+        self._first_node = self.Node_Class(value=first_value)
+        self._last_node = self.Node_Class(value=first_value)
 
         self._state = "__empty__" if first_value == None else "__not_empty__"
     
@@ -32,11 +32,18 @@ class Stack:
                 return None
         except:
             return None
+    
+    def peak(self):
+        return self._last_node
+    
+    def is_empty(self):
+        return True if self._state == "__empty__" else False
 
     def push(self, value: Any) -> str:
         #if the first node is empty
         if self._first_node.value is None:
             self._first_node.value = value
+            self._last_node = self._first_node
             self._state = "__not_empty__"
             return value
 
@@ -55,7 +62,7 @@ class Stack:
                 current_node = current_node.next
             current_node.next = new_node
 
-        self._last_node = new_node
+        self._last_node = self.Node_Class(value=value)
         self._state = "__not_empty__"
         return value
 
@@ -69,7 +76,7 @@ class Stack:
         if self._first_node.next is None:
             value = self._first_node.value
             self._first_node = self.Node_Class()
-            self._last_node = None
+            self._last_node = self._first_node
             self._state = "__empty__"
             return value
 
@@ -84,7 +91,7 @@ class Stack:
 
         value = current_node.value
         prev_node.next = None
-        self._last_node = prev_node
+        self._last_node = self.Node_Class(value=prev_node.value)
         self._state = "__not_empty__"
         return value
 
@@ -126,3 +133,59 @@ class Stack:
         #finish the str of the stack
         return str(final_list) + ")"
 
+def test_many_cases():
+    s = Stack()
+
+    # Teste para pilha vazia
+    assert len(s) == 0
+    assert s.pop() is None
+    assert s.is_empty() == True
+
+    # Adicionar e remover em uma pilha vazia
+    s.push(1)
+    assert len(s) == 1
+    assert s.pop() == 1
+    assert len(s) == 0
+
+    # Adicionar e remover com diferentes tipos de dados
+    s.push("string")
+    s.push(3.14)
+    s.push(True)
+    assert len(s) == 3
+
+    assert s._state == '__not_empty__'
+    assert s.is_empty() == False
+
+    assert s.pop() is True
+    assert s.pop() == 3.14
+    assert s.pop() == "string"
+    assert len(s) == 0
+
+    # Teste para adicionar muitos elementos
+    for i in range(1000):
+        s.push(i)
+    assert len(s) == 1000
+
+    # Teste para remover muitos elementos
+    for i in range(999, -1, -1):
+        assert s.pop() == i
+    assert len(s) == 0
+
+    # Teste para tentar remover de uma pilha vazia
+    assert s.pop() is None
+
+    # Teste para verificar se a pilha está vazia
+    assert len(s) == 0
+
+    assert s._state == "__empty__"
+
+    print(s.peak())
+    s.push('ooi')
+    print(s.peak())
+    s.push('nada')
+    print(s.peak())
+    s.push('aaa')
+    print(s.peak())
+    print(s)
+
+test_many_cases()
