@@ -3,12 +3,17 @@ from typing import Any
 class Node:
     def __init__(self, value=None, next_node=None) -> None:
         self.value = value
-        self.next = next_node
-        self.nonce = None
-        self.empty = True
+        self.next = None
     
     def _validate_node(self):
         return vars(self)
+
+    def _as_index(self,index,total_length):
+        self.distance_from_bottom = abs(1 - index)
+        self.distance_from_top = total_length - index
+        self.index = index
+
+        return self
 
     def __repr__(self):
         return str(self.value)
@@ -132,60 +137,34 @@ class Stack:
 
         #finish the str of the stack
         return str(final_list) + ")"
+    
+    def __getitem__(self, item):
+        #raise a exception if item (arg of stack[i]) is not int
+        if not isinstance(item, int):
+            raise
+        
+        #we start to count with the first node, and we start i=0
+        current_node,i = self._first_node, 1
+        while i < item:
+            if not current_node.next:
+                raise IndexError
 
-def test_many_cases():
-    s = Stack()
+            #an simple update o the node
+            current_node = current_node.next
+            i += 1
 
-    # Teste para pilha vazia
-    assert len(s) == 0
-    assert s.pop() is None
-    assert s.is_empty() == True
+        return current_node._as_index(i,len(self))
 
-    # Adicionar e remover em uma pilha vazia
-    s.push(1)
-    assert len(s) == 1
-    assert s.pop() == 1
-    assert len(s) == 0
+s = Stack()
+from string import ascii_letters
 
-    # Adicionar e remover com diferentes tipos de dados
-    s.push("string")
-    s.push(3.14)
-    s.push(True)
-    assert len(s) == 3
+for i in range(6):
 
-    assert s._state == '__not_empty__'
-    assert s.is_empty() == False
+    s.push(ascii_letters[i])
 
-    assert s.pop() is True
-    assert s.pop() == 3.14
-    assert s.pop() == "string"
-    assert len(s) == 0
+index = 100
 
-    # Teste para adicionar muitos elementos
-    for i in range(1000):
-        s.push(i)
-    assert len(s) == 1000
-
-    # Teste para remover muitos elementos
-    for i in range(999, -1, -1):
-        assert s.pop() == i
-    assert len(s) == 0
-
-    # Teste para tentar remover de uma pilha vazia
-    assert s.pop() is None
-
-    # Teste para verificar se a pilha está vazia
-    assert len(s) == 0
-
-    assert s._state == "__empty__"
-
-    print(s.peak())
-    s.push('ooi')
-    print(s.peak())
-    s.push('nada')
-    print(s.peak())
-    s.push('aaa')
-    print(s.peak())
-    print(s)
-
-test_many_cases()
+print(s)
+print(s[index])
+print(s[index].distance_from_bottom)
+print(s[index].distance_from_top)
