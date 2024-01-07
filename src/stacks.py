@@ -29,7 +29,7 @@ class Stack:
 
         self._state = "__empty__" if first_value == None else "__not_empty__"
     
-    def _validate_node(self, object_var: Any):
+    def _validate_node(self, object_var: Any) -> dict:
         try:
             if object_var._validate_node():
                 return True
@@ -38,10 +38,10 @@ class Stack:
         except:
             return None
     
-    def peak(self):
+    def peak(self) -> Node:
         return self._last_node
     
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return True if self._state == "__empty__" else False
 
     def push(self, value: Any) -> str:
@@ -100,7 +100,7 @@ class Stack:
         self._state = "__not_empty__"
         return value
 
-    def __len__(self):
+    def __len__(self) -> int:
         first_is_valid = self._validate_node(self._first_node)
 
         i = 1 if first_is_valid and self._state == "__not_empty__" else 0
@@ -117,7 +117,7 @@ class Stack:
         #return the length 
         return i
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         final_list = 'Stack('
 
         #if the stack is not null
@@ -138,7 +138,7 @@ class Stack:
         #finish the str of the stack
         return str(final_list) + ")"
     
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> Node:
         #raise a exception if item (arg of stack[i]) is not int
         if not isinstance(item, int):
             raise
@@ -155,16 +155,15 @@ class Stack:
 
         return current_node._as_index(i,len(self))
 
-s = Stack()
-from string import ascii_letters
+    def __iter__(self):
+        self._iter_index = 0
+        return self
 
-for i in range(6):
-
-    s.push(ascii_letters[i])
-
-index = 100
-
-print(s)
-print(s[index])
-print(s[index].distance_from_bottom)
-print(s[index].distance_from_top)
+    def __next__(self):
+        try:
+            value = self[self._iter_index]
+            self._iter_index += 1
+            return value
+        
+        except:
+            raise StopIteration
