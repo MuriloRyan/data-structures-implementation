@@ -1,5 +1,5 @@
 #it uses stacks (/src/stacks.py)
-from src.stacks import Stack
+from structures.stacks import Stack
 import random
 
 card_suits = ('hearts', 'diamonds', 'clubs', 'spades')

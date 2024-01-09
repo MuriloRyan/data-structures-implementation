@@ -156,10 +156,12 @@ class Stack:
         return current_node._as_index(i,len(self))
 
     def __iter__(self):
+        #we start to count with the first one
         self._iter_index = 0
         return self
 
     def __next__(self):
+        #return Stack[i]
         try:
             value = self[self._iter_index]
             self._iter_index += 1
