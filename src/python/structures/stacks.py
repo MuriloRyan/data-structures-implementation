@@ -118,17 +118,22 @@ class Stack:
         return i
 
     def __repr__(self) -> str:
+        def is_string(value):
+            if isinstance(value, str):
+                return f"'{value}'"
+            return value
+
         final_list = 'Stack('
 
         #if the stack is not null
-        final_list += str(self._first_node.value) if self._state == "__not_empty__" else ''
+        final_list += is_string(self._first_node.value) if self._state == "__not_empty__" else ''
 
         current_node = self._first_node.next if self._validate_node(self._first_node) else None
 
         try:
             #while the next value is not None, we add "," and the value of the Node
             while current_node:
-                final_list += ''.join(f',{str(current_node)}')
+                final_list += ''.join(f',{is_string(current_node.value)}')
 
                 #the next node is the next node of the last one
                 current_node = current_node.next
@@ -157,7 +162,7 @@ class Stack:
 
     def __iter__(self):
         #we start to count with the first one
-        self._iter_index = 0
+        self._iter_index = 1
         return self
 
     def __next__(self):
