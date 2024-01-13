@@ -43,6 +43,10 @@ class LinkedList:
         last_node.next = None
         return value
     
+    #__getitem__()
+    def get(self, index):
+        return self[index]
+    
     def search(self, value):
         current_node, i = self.head, 0
 
@@ -56,9 +60,11 @@ class LinkedList:
 
         return {'value': current_node.value, 'index': i}
     
+    #__delitem__()
     def remove(self, index):
         del self[index]
-
+    
+    #set: LinkedList[i]=value; get LinkedList[i]; del: del LinkedList[i].
     def __setitem__(self, index, value):
         current_node, i = self.head, 1
 
@@ -121,6 +127,20 @@ class LinkedList:
         
         except:
             raise StopIteration
+    
+    def __len__(self):
+        current_node,i = self.head,1
+        if not current_node.value:
+            return 0
+
+        if not current_node.next:
+            return i
+
+        while current_node.next:
+            current_node = current_node.next
+            i += 1
+
+        return i
 
     def __repr__(self):
         def is_string(value):
@@ -139,3 +159,4 @@ class LinkedList:
             current_node = current_node.next
 
         return str(final_string)[:-1] + ')'
+
