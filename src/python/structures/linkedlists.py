@@ -56,7 +56,7 @@ class LinkedList:
 
         return {'value': current_node.value, 'index': i}
     
-    def delete(self, index):
+    def remove(self, index):
         del self[index]
 
     def __setitem__(self, index, value):
