@@ -1,3 +1,5 @@
+#You can't start an Stack with an None value (it will not count)
+
 from typing import Any
 
 class Node:

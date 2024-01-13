@@ -1,115 +1,49 @@
-# 11/30/2023
-from typing import Any
-import sys
+"""   I will create a factory function
+    to return the correct type of HashTable
+    like: separate chaining HT and open addressing HT
 
-class Node:
-    def __init__(self, init_value=None) -> None:
-        self.value = [init_value]
+    for now, the Hashtable class is an separate chaining hash table
+"""
+
+class Index:
+    def __init__(self):
+        self.value = []
     
-    def add_value(self, value: Any):
-        if self.value[0] == None and len(self.value) == 1:
-            self.value = [value]
-
-            return True
-
+    def add_value(self, value):
         self.value.append(value)
-        return True
+        return value
+
+    def __len__(self):
+        i = 0
+        for item in self.value:
+            i += 1
+
+        return i
 
     def __repr__(self):
         return str(self.value)
 
-class Hashtable:
-    def __init__(self, size: int) -> None:
-        self.size = size
-        self.data = [Node() for _ in range(size)]
-
-    def _hash(self, key: str) -> int:
-        pre_hash = 0
-        primo = 33
-        
-        for c in key:
-        	pre_hash = (pre_hash + ord(c) * primo ) % self.size
-        
-        index = pre_hash
-        return index
-
-    def put(self, key: str, value: Any):
-        index = self._hash(key)
-        
-        self.data[index].add_value(value)
-        return True
-        
-    def get(self, key: str) -> Any:
-        index = self._hash(key)
-        data = self.data[index]
-
-        return {
-            "data": data,
-            "index": index
-        }
-        
-    def kill_one(self, key: str, value: Any):
-        index = self._hash(key)
-
-        try:
-            node = self.data[index]
-            node.value.remove(value)
-
-            if len(node.value) == 0:
-                node.value = [None]
-            
-            return True
-        except:
-            return False
+#Separate chaining Hash table
+class HashTable:
+    def __init__(self, length, index_class=Index):
+        self.index_class = index_class
+        self.length = length
+        self.data = [ self.index_class() for _ in range(self.length)]
     
-    def clear(self, index=None, key=None):
-    	index = index if index else self._hash(key)
-    	
-    	self.data[index] = Node()
-     	
-    	return True
-    	
-    def memory_bytes(self) ->int:
-    	total_size = 0
-    	
-    	for iten in self.data:
-    		node = iten
-    		total_size += sys.getsizeof(node)
-    	
-    	return total_size
+    def _hash(self, key):
+        return key % (self.length-1)
 
-    def __repr__(self) -> str:
-        
-        things = ''
-        for i in self.data:
-            if not i:
-                things += 'None,'
-            else:
-                things += str(i) + ','
-        return f'({things})'
-        
-    def __len__(self) -> int:
-     	return self.size
-     	
-    def line(self):
-     	result, i = '', 0
-     	
-     	for node in self.data:
-     		result += f"{i} - {node}\n"
-     		i += 1
-     	
-     	return result
+    def append(self, value, key):
+        self.data[self._hash(key)].add_value(value)
+        return True
 
-if __name__=='__main__':
+    def remove(self, value, key):
+        self.data[self._hash(key)] = self.index_class()
+        return True
 
-    ht = Hashtable(16)
+    def __repr__(self):
+        str_repr = 'HashTable('
+        for index in self.data:
+            str_repr += str(str(index) + ',') if len(index) != 0 else str(str(None) + ',')
 
-    ht.put('testing','apple')
-
-    print('\n', ht, '\n')
-
-    print(ht.get('testing'), '\n')
-
-    print (ht.kill_one('testing','apple'))
-
-    print(ht, '\n')
+        return str_repr + ')'
