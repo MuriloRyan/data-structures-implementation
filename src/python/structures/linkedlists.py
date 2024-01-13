@@ -55,6 +55,9 @@ class LinkedList:
             return None
 
         return {'value': current_node.value, 'index': i}
+    
+    def delete(self, index):
+        del self[index]
 
     def __setitem__(self, index, value):
         current_node, i = self.head, 1
@@ -79,6 +82,32 @@ class LinkedList:
 
         return current_node
     
+    def __delitem__(self, index):
+        if index < 0:
+            raise IndexError("Index out of range")
+
+        if index == 0:
+            # Special case for deleting the head
+            if self.head.next:
+                self.head = self.head.next
+            else:
+                # If the list has only one element, reset the head
+                self.head = self.node_class(None)
+            return
+
+        current_node, i = self.head, 0
+
+        while i < index - 1:
+            if not current_node.next:
+                raise IndexError("Index out of range")
+            
+            current_node, i = current_node.next, i + 1
+
+        if not current_node.next:
+            raise IndexError("Index out of range")
+
+        current_node.next = current_node.next.next
+
     def __iter__(self):
         self._iter_index = 1
         return self
