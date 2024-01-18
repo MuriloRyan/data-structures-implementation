@@ -31,6 +31,14 @@ class HashTable:
         self.data = [ self.index_class() for _ in range(self.length)]
     
     def _hash(self, key):
+        key = str(key)
+        final_key = ''
+        
+        for c in key:
+            final_key += str(ord(c))
+            
+        key = int(final_key)
+
         return key % (self.length-1)
 
     def append(self, value, key):
@@ -40,6 +48,9 @@ class HashTable:
     def remove(self, value, key):
         self.data[self._hash(key)] = self.index_class()
         return True
+
+    def __getitem__(self, index):
+        return self.data[index]
 
     def __repr__(self):
         str_repr = 'HashTable('
